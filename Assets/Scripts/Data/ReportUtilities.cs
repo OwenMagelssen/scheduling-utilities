@@ -1,24 +1,33 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
+using UnityEditor;
 using UnityEngine;
 
 namespace SchedulingUtilities
 {
     public static class ReportUtilities
     {
-        public static void CsvToTableGUI(string csvFilePath, IReportDataDescriptor reportDescriptor)
+        [MenuItem("Assets/Create/Scheduling Time Off Request Table", priority = 50)]
+        public static void CsvToTableGUI()
         {
+            string selectionPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
+            FileAttributes attr = File.GetAttributes(selectionPath);
+            bool isDirectory = (attr & FileAttributes.Directory) == FileAttributes.Directory;
+
+            if (string.IsNullOrEmpty(selectionPath) || isDirectory)
+            {
+                Debug.Log("A CSV file must be selected to generate a table.");
+                return;
+            }
+            
             var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
             {
                 HasHeaderRecord = false
             };
 
-            var path = Application.dataPath + "TimeOffReport.csv";
+            var path = selectionPath;
             using var streamReader = File.OpenText(path);
             using var csvReader = new CsvReader(streamReader, csvConfig);
 
@@ -26,10 +35,21 @@ namespace SchedulingUtilities
 
             while (csvReader.Read())
             {
-                for (int i = 0; csvReader.TryGetField<string>(i, out value); i++)
+                string row = string.Empty;
+                
+                for (int i = 0; csvReader.TryGetField(i, out value); i++)
                 {
-                    Debug.Log(value);
+                    if (i % 8 == 0)
+                    {
+                        // row += "\n";
+                        Debug.Log(row);
+                        row = string.Empty;
+                    }
+                    
+                    row += value;
                 }
+
+                Debug.Log(row);
             }
         }
     }

@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "ab764d2b62adc4a4fa2dd414bb57e5e5c6edd37d"
     },
+    "com.oni.editortools": {
+      "version": "https://github.com/OwenMagelssen/ONI.EditorTools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "8f08de8456065cd959759456a182bd7c822a3778"
+    },
     "com.unity.2d.animation": {
       "version": "7.0.6",
       "depth": 1,

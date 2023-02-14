@@ -1,0 +1,9 @@
+Time Off by Dept Columns:
+    Employee Name - Last, First
+    Job Title
+    Requested Date - M/DD/YYYY
+    Time/Shift  - 24hr HH:MM:SS
+    Day Shift Hours - e.g. 8.00
+    Night Shift Hours - e.g. 8.00
+    When Submitted - e.g. M/DD/YYYY 12:00 PM
+    Status - e.g. Approved
