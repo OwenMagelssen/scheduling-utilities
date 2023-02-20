@@ -1,4 +1,6 @@
-Time Off by Dept Columns:
+
+
+"ETM601 Employee Time Off - By Dept" Data:
     Employee Name - Last, First
     Job Title
     Requested Date - M/DD/YYYY
@@ -7,3 +9,22 @@ Time Off by Dept Columns:
     Night Shift Hours - e.g. 8.00
     When Submitted - e.g. M/DD/YYYY 12:00 PM
     Status - e.g. Approved
+    
+    Raw Column Data:
+        0 - department identifier e.g. "Time Off Details for :Security ( 15410 ) "
+        1 - Shift e.g. "Day Shift", "Night Shift"
+        2 - name e.g. "Magelssen, Owen"
+        3 - title e.g. "Security Officer", "Security Working Supervisor"
+        4 - day of requested time off e.g. "3/19/2023"
+        5 - start time of shift requested off e.g. "06:00:00"
+        6 - number of day hours requested off (not reliable?) e.g. "8.00"
+        7 - number of night hours requested off (not reliable?) e.g. "8.00"
+        8 - date and time request was made e.g. "1/25/2023 2:20 PM"
+        9 - status e.g. "Approved"
+        10 - label for total approved hours by shift e.g. "Total  Approved Hours for Night Shift : "
+        11 - total day approved hours (for department and only if same as request?) e.g. "150.50"
+        12 - total night approved hours (for department and only if same as request?) e.g. "136.00"
+        
+    
+"Department Overtime Hours by Employee" Columns:
+    
