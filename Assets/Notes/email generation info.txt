@@ -3,3 +3,10 @@
    &bcc=lastemail@example.com
    &subject=Mail from our Website
    &body=Some body text here">Send Email</a>
+   
+   potential template:
+   
+<a href="mailto:#EMPLOYEEEMAIL#?
+   cc=securityscheduling@seattlechildrens.org
+   &subject=Time Off Requests for #MONTH#
+   &body=Some body text here">Send Email</a>

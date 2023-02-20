@@ -31,21 +31,12 @@ namespace SchedulingUtilities
             using var streamReader = File.OpenText(path);
             using var csvReader = new CsvReader(streamReader, csvConfig);
 
-            string value;
-
             while (csvReader.Read())
             {
                 string row = string.Empty;
                 
-                for (int i = 0; csvReader.TryGetField(i, out value); i++)
+                for (int i = 0; csvReader.TryGetField(i, out string value); i++)
                 {
-                    if (i % 8 == 0)
-                    {
-                        // row += "\n";
-                        Debug.Log(row);
-                        row = string.Empty;
-                    }
-                    
                     row += value;
                 }
 
