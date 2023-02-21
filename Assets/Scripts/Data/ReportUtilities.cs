@@ -27,8 +27,8 @@ namespace SchedulingUtilities
                 HasHeaderRecord = false
             };
 
-            var path = selectionPath;
-            using var streamReader = File.OpenText(path);
+            Debug.Log(selectionPath);
+            using var streamReader = File.OpenText(selectionPath);
             using var csvReader = new CsvReader(streamReader, csvConfig);
 
             while (csvReader.Read())
