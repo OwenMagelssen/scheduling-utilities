@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using UI.Tables;
 using UnityEngine;
@@ -30,11 +29,18 @@ namespace SchedulingUtilities
             }
 
             float width = (float)Screen.width / tableLayout.ColumnWidths.Count;
+            float tableHeight = 0;
             
             for (int i = 0; i < tableLayout.ColumnWidths.Count; i++)
                 tableLayout.ColumnWidths[i] = width;
             
             tableLayout.CalculateLayoutInputHorizontal();
+            
+            for (int i = 0; i < tableLayout.Rows.Count; i++)
+                tableHeight += tableLayout.Rows[i].actualHeight;
+
+            var rt = tableLayout.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(rt.sizeDelta.x, tableHeight);
         }
 
         private void DoImmediateModeGUI()
