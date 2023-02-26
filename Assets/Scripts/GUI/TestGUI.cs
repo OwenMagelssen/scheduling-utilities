@@ -47,7 +47,6 @@ namespace SchedulingUtilities
             foreach (var request in report.timeOffRequests)
             {
                 var row = tableLayout.AddRow();
-                row.preferredHeight = stringCellPrefab.fontSize + padding.y;
                 columnWidths[0] = Mathf.Max(columnWidths[0], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.EmployeeName));
                 columnWidths[1] = Mathf.Max(columnWidths[1], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.JobTitle.ToString()));
                 columnWidths[2] = Mathf.Max(columnWidths[2], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart.ToString(culture)));
@@ -58,16 +57,18 @@ namespace SchedulingUtilities
 
             float columnWidthSum = 0;
             columnWidths.ForEach(i => columnWidthSum += i + padding.x);
-            float widthFactor = _rectTransform.rect.width / columnWidthSum;
+            float cellScale = _rectTransform.rect.width / columnWidthSum;
             
             for (int i = 0; i < columnWidths.Count; i++)
-                columnWidths[i] = (columnWidths[i] + padding.x) * widthFactor;
+                columnWidths[i] = (columnWidths[i] + padding.x) * cellScale;
 
             for (int i = 0; i < _allCellTexts.Count; i++)
-                _allCellTexts[i].fontSize *= widthFactor;
+                _allCellTexts[i].fontSize *= cellScale;
             
             tableLayout.ColumnWidths = columnWidths;
             tableLayout.CalculateLayoutInputHorizontal();
+
+            tableLayout.Rows.ForEach(row => row.preferredHeight = (stringCellPrefab.fontSize + padding.y) * cellScale);
             float tableHeight = 0;
             
             for (int i = 0; i < tableLayout.Rows.Count; i++)
