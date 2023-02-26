@@ -330,6 +330,14 @@ MonoBehaviour:
   report: {fileID: 11400000, guid: 30fdfc3fc7fc748989c8b3febf30bf18, type: 2}
   tableLayout: {fileID: 87126382}
   padding: {x: 24, y: 24}
+  rowSelectableColors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.50980395, g: 0.78431374, b: 1, a: 1}
+    m_PressedColor: {r: 0.5933813, g: 0.5707547, b: 1, a: 1}
+    m_SelectedColor: {r: 0.23113209, g: 0.66322327, b: 1, a: 1}
+    m_DisabledColor: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.2
 --- !u!114 &472259601
 MonoBehaviour:
   m_ObjectHideFlags: 0
