@@ -1,13 +1,38 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UI.Tables;
 using UnityEngine;
+using TMPro;
 
 namespace SchedulingUtilities
 {
     public class TestGUI : MonoBehaviour
     {
+        public TextMeshProUGUI stringCellPrefab;
         public TimeOffRequestReport report;
         public TableLayout tableLayout;
+        public Vector2 padding = Vector2.one * 24.0f;
+
+        private RectTransform _rectTransform;
+
+        private float AddStringCellGetWidth(TableRow row, TextMeshProUGUI text, string value)
+        {
+            var rt = text.GetComponent<RectTransform>();
+            rt.pivot = Vector2.zero;
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.sizeDelta = Vector2.zero;
+            text.text = value;
+            text.ForceMeshUpdate();
+            row.AddCell(rt);
+            return text.preferredWidth;
+        }
+
+        private void Awake()
+        {
+            _rectTransform = GetComponent<RectTransform>();
+        }
 
         private void Start()
         {
@@ -15,26 +40,26 @@ namespace SchedulingUtilities
             if (tableLayout == null) return;
             tableLayout.ClearRows();
             var culture = new CultureInfo("en-US");
+            var columnWidths = new List<float>() { 0, 0, 0, 0, 0, 0 };
 
             foreach (var request in report.timeOffRequests)
             {
                 var row = tableLayout.AddRow();
-                row.preferredHeight = 128;
-                row.AddCell(ReportUtilities.CreateStringCell(request.EmployeeName));
-                row.AddCell(ReportUtilities.CreateStringCell(request.JobTitle.ToString()));
-                row.AddCell(ReportUtilities.CreateStringCell(request.TimeOffStart.ToString(culture)));
-                row.AddCell(ReportUtilities.CreateStringCell(request.Hours.ToString(culture)));
-                row.AddCell(ReportUtilities.CreateStringCell(request.RequestedOn.ToString(culture)));
-                row.AddCell(ReportUtilities.CreateStringCell(request.Status.ToString()));
+                row.preferredHeight = stringCellPrefab.fontSize + padding.y;
+                columnWidths[0] = Mathf.Max(columnWidths[0], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.EmployeeName));
+                columnWidths[1] = Mathf.Max(columnWidths[1], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.JobTitle.ToString()));
+                columnWidths[2] = Mathf.Max(columnWidths[2], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart.ToString(culture)));
+                columnWidths[3] = Mathf.Max(columnWidths[3], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours.ToString(culture)));
+                columnWidths[4] = Mathf.Max(columnWidths[4], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn.ToString(culture)));
+                columnWidths[5] = Mathf.Max(columnWidths[5], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.Status.ToString()));
             }
 
-            float width = (float)Screen.width / tableLayout.ColumnWidths.Count;
-            float tableHeight = 0;
+            for (int i = 0; i < columnWidths.Count; i++)
+                columnWidths[i] += padding.x;
             
-            for (int i = 0; i < tableLayout.ColumnWidths.Count; i++)
-                tableLayout.ColumnWidths[i] = width;
-            
+            tableLayout.ColumnWidths = columnWidths;
             tableLayout.CalculateLayoutInputHorizontal();
+            float tableHeight = 0;
             
             for (int i = 0; i < tableLayout.Rows.Count; i++)
                 tableHeight += tableLayout.Rows[i].actualHeight;

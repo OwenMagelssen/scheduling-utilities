@@ -43,7 +43,12 @@ namespace SchedulingUtilities
 			EditorGUILayout.EndHorizontal();
 			
 			if (GUILayout.Button("Create Report"))
+			{
+				Undo.RecordObject(_report, "Create Time Off Request Report");
 				_report.CreateReport();
+				serializedObject.ApplyModifiedProperties();
+				AssetDatabase.Refresh();
+			}
 			
             serializedObject.ApplyModifiedProperties();
         }

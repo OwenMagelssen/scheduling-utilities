@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace SchedulingUtilities
 {
@@ -16,6 +17,13 @@ namespace SchedulingUtilities
 		{
 			var report = this as IReport;
 			timeOffRequests = report.ProcessEtmReport<TimeOffRequest>(etmReportCsvFilePath);
+		}
+
+		public string AsJson()
+		{
+			var settings = new JsonSerializerSettings();
+			settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+			return JsonConvert.SerializeObject(timeOffRequests, settings);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace SchedulingUtilities
 {
@@ -15,6 +16,13 @@ namespace SchedulingUtilities
 
 		[SerializeField] private long _timeOffStartTicks;
 		[SerializeField] private long _requestedOnTicks;
+		
+		public string AsJson()
+		{
+			var settings = new JsonSerializerSettings();
+			settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+			return JsonConvert.SerializeObject(this, settings);
+		}
 		
 		public void OnBeforeSerialize()
 		{

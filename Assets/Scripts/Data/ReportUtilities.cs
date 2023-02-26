@@ -6,15 +6,13 @@ namespace SchedulingUtilities
 {
     public static class ReportUtilities
     {
-        public static RectTransform CreateStringCell(string value)
+        public static RectTransform CreateStringCell(TextMeshProUGUI text, string value)
         {
-            var go = new GameObject();
-            var rt = go.AddComponent<RectTransform>();
+            var rt = text.GetComponent<RectTransform>();
             rt.pivot = Vector2.zero;
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;
             rt.sizeDelta = Vector2.zero;
-            var text = rt.AddComponent<TextMeshProUGUI>();
             text.text = value;
             return rt;
         }
