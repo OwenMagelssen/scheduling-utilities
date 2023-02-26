@@ -15,9 +15,11 @@ namespace SchedulingUtilities
         public Vector2 padding = Vector2.one * 24.0f;
 
         private RectTransform _rectTransform;
+        private List<TextMeshProUGUI> _allCellTexts = new();
 
         private float AddStringCellGetWidth(TableRow row, TextMeshProUGUI text, string value)
         {
+            _allCellTexts.Add(text);
             var rt = text.GetComponent<RectTransform>();
             rt.pivot = Vector2.zero;
             rt.anchorMin = Vector2.zero;
@@ -54,8 +56,15 @@ namespace SchedulingUtilities
                 columnWidths[5] = Mathf.Max(columnWidths[5], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.Status.ToString()));
             }
 
+            float columnWidthSum = 0;
+            columnWidths.ForEach(i => columnWidthSum += i + padding.x);
+            float widthFactor = _rectTransform.rect.width / columnWidthSum;
+            
             for (int i = 0; i < columnWidths.Count; i++)
-                columnWidths[i] += padding.x;
+                columnWidths[i] = (columnWidths[i] + padding.x) * widthFactor;
+
+            for (int i = 0; i < _allCellTexts.Count; i++)
+                _allCellTexts[i].fontSize *= widthFactor;
             
             tableLayout.ColumnWidths = columnWidths;
             tableLayout.CalculateLayoutInputHorizontal();
