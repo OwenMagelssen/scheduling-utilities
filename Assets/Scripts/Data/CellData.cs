@@ -1,0 +1,71 @@
+using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using UnityEngine;
+using TMPro;
+
+namespace SchedulingUtilities
+{
+    public enum CellDataType
+    {
+        StringData,
+        FloatData,
+        DateTimeData,
+        EnumData
+    }
+    
+    public class CellData : MonoBehaviour
+    {
+        public TextMeshProUGUI Text => text;
+        [SerializeField] private TextMeshProUGUI text;
+        public RectTransform RectTransform => _rectTransform;
+        private RectTransform _rectTransform;
+
+        public string DisplayName => _dataDisplayString;
+        private string _dataDisplayString;
+
+        public string StringData => _stringData;
+        private string _stringData;
+        public float FloatData => _floatData;
+        private float _floatData;
+        public DateTime DateTimeData => _dateTimeData;
+        private DateTime _dateTimeData;
+        public int EnumValueData => _enumData;
+        private int _enumData;
+        
+        private CultureInfo _culture = new CultureInfo("en-US");
+
+        private void Awake()
+        {
+            _rectTransform = GetComponent<RectTransform>();
+        }
+
+        public void SetData(string data)
+        {
+            _stringData = data;
+            _dataDisplayString = data;
+            text.text = _dataDisplayString;
+        }
+
+        public void SetData(float data)
+        {
+            _floatData = data;
+            _dataDisplayString = data.ToString(_culture);
+            text.text = _dataDisplayString;
+        }
+
+        public void SetData(DateTime data)
+        {
+            _dateTimeData = data;
+            _dataDisplayString = data.ToString(_culture);
+            text.text = _dataDisplayString;
+        }
+
+        public void SetData(Enum data)
+        {
+            _enumData = (int)(object)data; //lol
+            _dataDisplayString = Regex.Replace(data.ToString(), "([A-Z])", " $1").Trim();
+            text.text = _dataDisplayString;
+        }
+    }
+}

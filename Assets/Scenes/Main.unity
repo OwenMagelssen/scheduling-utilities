@@ -326,10 +326,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a4e980c1ebfb463aabffaace0ffd56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stringCellPrefab: {fileID: 5355594254754402832, guid: a9c6d3189d7744d47973a9dd8850883e, type: 3}
+  stringCellPrefab: {fileID: 3238924373593352549, guid: a9c6d3189d7744d47973a9dd8850883e, type: 3}
   report: {fileID: 11400000, guid: 30fdfc3fc7fc748989c8b3febf30bf18, type: 2}
   tableLayout: {fileID: 87126382}
-  padding: {x: 24, y: 24}
+  verticalScrollbar: {fileID: 682484197}
+  tablePadding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  cellSpacing: 0
+  cellPadding: 4
+  rowColor: {r: 1, g: 1, b: 1, a: 1}
   rowSelectableColors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.50980395, g: 0.78431374, b: 1, a: 1}
