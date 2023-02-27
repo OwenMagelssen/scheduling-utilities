@@ -179,7 +179,7 @@ namespace SchedulingUtilities
             tableLayout.CalculateLayoutInputHorizontal();
 
             tableLayout.Rows.ForEach(row => row.preferredHeight = scaledFontSize);
-            float tableHeight = 0;
+            float tableHeight = 50.0f; // default extra height
             
             for (int i = 0; i < tableLayout.Rows.Count; i++)
                 tableHeight += tableLayout.Rows[i].preferredHeight + cellSpacing;
