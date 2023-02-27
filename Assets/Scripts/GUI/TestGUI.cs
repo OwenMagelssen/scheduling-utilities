@@ -4,7 +4,6 @@ using System.Globalization;
 using UI.Tables;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace SchedulingUtilities
@@ -32,17 +31,32 @@ namespace SchedulingUtilities
         };
 
         private RectTransform _rectTransform;
+        private List<float> _columnWidths = new () { 0, 0, 0, 0, 0, 0 };
         private List<TextMeshProUGUI> _allCellTexts = new();
         private float _scrollbarWidth;
+        private RectOffset _noPadding;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _noPadding = new (0, 0, 0, 0);
+        }
+
+        private void OnEnable()
+        {
+            var disableEvent = verticalScrollbar.GetComponent<EventOnDisable>();
+            disableEvent.onDisable += RecalculateLayout;
+        }
+        
+        
+        private void OnDisable()
+        {
+            var disableEvent = verticalScrollbar.GetComponent<EventOnDisable>();
+            disableEvent.onDisable -= RecalculateLayout;
         }
 
         private void Start()
         {
-            _scrollbarWidth = verticalScrollbar == null ? 0 : verticalScrollbar.rect.width;
             CreateTable();
         }
 
@@ -115,36 +129,53 @@ namespace SchedulingUtilities
             tableLayout.ClearRows();
             tableLayout.RowBackgroundColor = rowColor;
             tableLayout.padding = tablePadding;
-            // tableLayout.CellPadding = cellPadding;
+            tableLayout.CellPadding = _noPadding;
             tableLayout.CellSpacing = cellSpacing;
             
             var culture = new CultureInfo("en-US");
-            var columnWidths = new List<float>() { 0, 0, 0, 0, 0, 0 };
+
+            for (int i = 0; i < _columnWidths.Count; i++)
+                _columnWidths[i] = 0;
 
             foreach (var request in report.timeOffRequests)
             {
                 TableRow row = tableLayout.AddRow();
-                columnWidths[0] = Mathf.Max(columnWidths[0], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.EmployeeName));
-                columnWidths[1] = Mathf.Max(columnWidths[1], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.JobTitle));
-                columnWidths[2] = Mathf.Max(columnWidths[2], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
-                columnWidths[3] = Mathf.Max(columnWidths[3], AddFloatCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
-                columnWidths[4] = Mathf.Max(columnWidths[4], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
-                columnWidths[5] = Mathf.Max(columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status));
+                var button = row.gameObject.AddComponent<Button>();
+                var selectable = (Selectable)button;
+                selectable.colors = rowSelectableColors;
+                button.onClick.AddListener(() => SelectRequest(request));
+                
+                _columnWidths[0] = Mathf.Max(_columnWidths[0], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.EmployeeName));
+                _columnWidths[1] = Mathf.Max(_columnWidths[1], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.JobTitle));
+                _columnWidths[2] = Mathf.Max(_columnWidths[2], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
+                _columnWidths[3] = Mathf.Max(_columnWidths[3], AddFloatCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
+                _columnWidths[4] = Mathf.Max(_columnWidths[4], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
+                _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status));
             }
-
-            float columnWidthSum = 0;
-            columnWidths.ForEach(width => columnWidthSum += (width + cellSpacing));
-            float cellScale = _rectTransform.rect.width / (columnWidthSum + _scrollbarWidth + cellSpacing);
             
-            for (int i = 0; i < columnWidths.Count; i++)
-                columnWidths[i] *= cellScale;
+            RecalculateLayout();
+        }
+
+        [ContextMenu("Recalculate Layout")]
+        public void RecalculateLayout()
+        {
+            _scrollbarWidth = verticalScrollbar == null || !verticalScrollbar.gameObject.activeInHierarchy ? 0 : verticalScrollbar.rect.width;
+            
+            float columnWidthSum = 0;
+            _columnWidths.ForEach(width => columnWidthSum += (width + cellSpacing));
+            float cellScale = _rectTransform.rect.width / (columnWidthSum + _scrollbarWidth + cellSpacing);
+
+            List<float> scaledColumnWidths = new List<float>(6);
+            
+            for (int i = 0; i < _columnWidths.Count; i++)
+                scaledColumnWidths.Add(_columnWidths[i] * cellScale);
 
             float scaledFontSize = stringCellPrefab.Text.fontSize * cellScale;
             
             for (int i = 0; i < _allCellTexts.Count; i++)
                 _allCellTexts[i].fontSize = scaledFontSize - cellPadding * 2.0f;
             
-            tableLayout.ColumnWidths = columnWidths;
+            tableLayout.ColumnWidths = scaledColumnWidths;
             tableLayout.CalculateLayoutInputHorizontal();
 
             tableLayout.Rows.ForEach(row => row.preferredHeight = scaledFontSize);
@@ -155,15 +186,6 @@ namespace SchedulingUtilities
 
             var rt = tableLayout.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(rt.sizeDelta.x, tableHeight);
-
-            for (int i = 0; i < tableLayout.Rows.Count; i++)
-            {
-                var button = tableLayout.Rows[i].gameObject.AddComponent<Button>();
-                var selectable = button as Selectable;
-                selectable.colors = rowSelectableColors;
-                int index = i;
-                button.onClick.AddListener(() => SelectRequest(report.timeOffRequests[index]));
-            }
         }
 
         private void SelectRequest(TimeOffRequest request)
