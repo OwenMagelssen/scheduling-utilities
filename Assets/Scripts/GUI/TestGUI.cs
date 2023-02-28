@@ -4,14 +4,18 @@ using System.Globalization;
 using UI.Tables;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace SchedulingUtilities
 {
     public class TestGUI : MonoBehaviour
     {
+        public ColumnHeader columnHeaderPrefab;
         public CellData stringCellPrefab;
         public TimeOffRequestReport report;
+        public RectTransform tableHeaderRect;
+        // public RectTransform tableContentsRect;
         public TableLayout tableLayout;
         public RectTransform verticalScrollbar;
         public RectOffset tablePadding;
@@ -32,6 +36,7 @@ namespace SchedulingUtilities
 
         private RectTransform _rectTransform;
         private List<float> _columnWidths = new () { 0, 0, 0, 0, 0, 0 };
+        private List<ColumnHeader> _columnHeaders = new();
         private List<TextMeshProUGUI> _allCellTexts = new();
         private float _scrollbarWidth;
         private RectOffset _noPadding;
@@ -120,6 +125,16 @@ namespace SchedulingUtilities
             return cellData.Text.preferredWidth + cellPadding * 2.0f;
         }
 
+        private ColumnHeader CreateColumnHeader(string label, Action sortFunction)
+        {
+            var header = Instantiate(columnHeaderPrefab, tableHeaderRect);
+            header.label.text = label;
+            header.button.onClick.AddListener(new UnityAction(sortFunction));
+            header.RectTransform.pivot = Vector2.zero;
+            header.RectTransform.anchorMin = header.RectTransform.anchorMax = Vector2.zero;
+            return header;
+        }
+
         [ContextMenu("Create Table")]
         private void CreateTable()
         {
@@ -153,6 +168,14 @@ namespace SchedulingUtilities
                 _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status));
             }
             
+            
+            _columnHeaders.Clear();
+            _columnHeaders.Add(CreateColumnHeader("Name", SortByName));
+            _columnHeaders.Add(CreateColumnHeader("Title", SortByTitle));
+            _columnHeaders.Add(CreateColumnHeader("Time Off Start", SortByTimeOffStart));
+            _columnHeaders.Add(CreateColumnHeader("Hours", SortByHours));
+            _columnHeaders.Add(CreateColumnHeader("Requested On", SortByDateTimeRequested));
+            _columnHeaders.Add(CreateColumnHeader("Status", SortByStatus));
             RecalculateLayout();
         }
 
@@ -176,6 +199,19 @@ namespace SchedulingUtilities
                 _allCellTexts[i].fontSize = scaledFontSize - cellPadding * 2.0f;
             
             tableLayout.ColumnWidths = scaledColumnWidths;
+
+            // tableHeaderRect.sizeDelta = new Vector2(columnWidthSum * cellScale, tableHeaderRect.rect.height);
+            float xHeaderPos = 0;
+            
+            for (int i = 0; i < scaledColumnWidths.Count; i++)
+            {
+                _columnHeaders[i].RectTransform.SetParent(tableHeaderRect);
+                _columnHeaders[i].RectTransform.anchoredPosition = new Vector2(xHeaderPos, 0);
+                _columnHeaders[i].RectTransform.sizeDelta =
+                    new Vector2(scaledColumnWidths[i], tableHeaderRect.rect.height);
+                xHeaderPos += scaledColumnWidths[i];
+            }
+            
             tableLayout.CalculateLayoutInputHorizontal();
 
             tableLayout.Rows.ForEach(row => row.preferredHeight = scaledFontSize);
@@ -186,6 +222,36 @@ namespace SchedulingUtilities
 
             var rt = tableLayout.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(rt.sizeDelta.x, tableHeight);
+        }
+
+        private void SortByName()
+        {
+            Debug.Log("Sorted by name");
+        }
+
+        private void SortByTitle()
+        {
+            Debug.Log("Sorted by title");
+        }
+
+        private void SortByTimeOffStart()
+        {
+            Debug.Log("Sorted by time off start");
+        }
+
+        private void SortByHours()
+        {
+            Debug.Log("Sorted by hours");
+        }
+
+        private void SortByDateTimeRequested()
+        {
+            Debug.Log("Sorted by time requested");
+        }
+        
+        private void SortByStatus()
+        {
+            Debug.Log("Sorted by status");
         }
 
         private void SelectRequest(TimeOffRequest request)
