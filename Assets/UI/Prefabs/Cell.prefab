@@ -175,9 +175,9 @@ MonoBehaviour:
   m_DrawShape: 3
   m_ImageType: 0
   m_StrokeWidth: 0
-  m_FalloffDistance: 0
-  m_OutlineWidth: 0
-  m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+  m_FalloffDistance: 2
+  m_OutlineWidth: 2
+  m_OutlineColor: {r: 0, g: 0, b: 0, a: 0}
   m_ShapeRotation: 0
   m_ConstrainRotation: 1
   m_FlipHorizontal: 0

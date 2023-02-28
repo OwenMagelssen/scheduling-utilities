@@ -41,6 +41,9 @@ namespace SchedulingUtilities
         private List<TextMeshProUGUI> _allCellTexts = new();
         private float _scrollbarWidth;
         private RectOffset _noPadding;
+        // private Color _transparentRed = new Color(1, 0, 0, 0.5f);
+        // private Color _transparentGreen = new Color(0, 1, 0, 0.5f);
+        // private Color _transparentYellow = new Color(1, 1, 0, 0.5f);
 
         private void Awake()
         {
@@ -167,8 +170,15 @@ namespace SchedulingUtilities
                 _columnWidths[2] = Mathf.Max(_columnWidths[2], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
                 _columnWidths[3] = Mathf.Max(_columnWidths[3], AddFloatCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
                 _columnWidths[4] = Mathf.Max(_columnWidths[4], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
-                var statusColor = request.Status == Status.Pending ? Color.yellow :
-                    request.Status == Status.Approved ? Color.green : Color.red;
+                
+                Color statusColor = (request.Status) switch
+                {
+                    Status.Denied => Color.red,
+                    Status.Approved => Color.green,
+                    Status.Pending => Color.yellow,
+                    _ => Color.clear
+                };
+                
                 _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
             }
             
