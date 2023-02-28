@@ -17,6 +17,7 @@ namespace SchedulingUtilities
         public RectTransform tableHeaderRect;
         // public RectTransform tableContentsRect;
         public TableLayout tableLayout;
+        public TimeOffRequestInspector requestInspector;
         public RectTransform verticalScrollbar;
         public RectOffset tablePadding;
         public float cellSpacing;
@@ -256,7 +257,8 @@ namespace SchedulingUtilities
 
         private void SelectRequest(TimeOffRequest request)
         {
-            
+            requestInspector.gameObject.SetActive(true);
+            requestInspector.TimeOffRequest = request;
         }
 
         private void DoImmediateModeGUI()
