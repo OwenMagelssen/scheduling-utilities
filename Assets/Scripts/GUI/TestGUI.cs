@@ -110,8 +110,8 @@ namespace SchedulingUtilities
             cellData.Text.ForceMeshUpdate();
             return cellData.Text.preferredWidth + cellPadding * 2.0f;
         }
-        
-        private float AddEnumCellGetWidth(TableRow row, CellData cellData, Enum value)
+
+        private float AddEnumCellGetWidth(TableRow row, CellData cellData, Enum value, Color? cellColor = null)
         {
             _allCellTexts.Add(cellData.Text);
             var rt = cellData.GetComponent<RectTransform>();
@@ -121,6 +121,7 @@ namespace SchedulingUtilities
             rt.sizeDelta = Vector2.zero;
             row.AddCell(rt);
             cellData.Text.margin = Vector4.one * cellPadding;
+            cellData.SetColor((cellColor ?? Color.clear));
             cellData.SetData(value);
             cellData.Text.ForceMeshUpdate();
             return cellData.Text.preferredWidth + cellPadding * 2.0f;
@@ -166,7 +167,9 @@ namespace SchedulingUtilities
                 _columnWidths[2] = Mathf.Max(_columnWidths[2], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
                 _columnWidths[3] = Mathf.Max(_columnWidths[3], AddFloatCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
                 _columnWidths[4] = Mathf.Max(_columnWidths[4], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
-                _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status));
+                var statusColor = request.Status == Status.Pending ? Color.yellow :
+                    request.Status == Status.Approved ? Color.green : Color.red;
+                _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
             }
             
             

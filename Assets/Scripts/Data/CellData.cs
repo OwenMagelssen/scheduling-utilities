@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace SchedulingUtilities
 {
@@ -16,6 +17,7 @@ namespace SchedulingUtilities
     
     public class CellData : MonoBehaviour
     {
+        [SerializeField] private Image image;
         public TextMeshProUGUI Text => text;
         [SerializeField] private TextMeshProUGUI text;
         public RectTransform RectTransform => _rectTransform;
@@ -66,6 +68,11 @@ namespace SchedulingUtilities
             _enumData = (int)(object)data; //lol
             _dataDisplayString = Regex.Replace(data.ToString(), "([A-Z])", " $1").Trim();
             text.text = _dataDisplayString;
+        }
+
+        public void SetColor(Color color)
+        {
+            image.color = color;
         }
     }
 }
