@@ -39,11 +39,9 @@ namespace SchedulingUtilities
         private List<float> _columnWidths = new () { 0, 0, 0, 0, 0, 0 };
         private List<ColumnHeader> _columnHeaders = new();
         private List<TextMeshProUGUI> _allCellTexts = new();
+        private Dictionary<TimeOffRequest, TableRow> _rowDictionary = new();
         private float _scrollbarWidth;
         private RectOffset _noPadding;
-        // private Color _transparentRed = new Color(1, 0, 0, 0.5f);
-        // private Color _transparentGreen = new Color(0, 1, 0, 0.5f);
-        // private Color _transparentYellow = new Color(1, 1, 0, 0.5f);
 
         private void Awake()
         {
@@ -157,9 +155,12 @@ namespace SchedulingUtilities
             for (int i = 0; i < _columnWidths.Count; i++)
                 _columnWidths[i] = 0;
 
-            foreach (var request in report.timeOffRequests)
+            for (int i = 0; i < report.timeOffRequests.Count; i++)
             {
+                var request = report.timeOffRequests[i];
                 TableRow row = tableLayout.AddRow();
+                _rowDictionary.TryAdd(request, row);
+                
                 var button = row.gameObject.AddComponent<Button>();
                 var selectable = (Selectable)button;
                 selectable.colors = rowSelectableColors;
@@ -236,6 +237,11 @@ namespace SchedulingUtilities
 
             var rt = tableLayout.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(rt.sizeDelta.x, tableHeight);
+        }
+
+        private void RedrawRows()
+        {
+            tableLayout.ClearRows();
         }
 
         private void SortByName()

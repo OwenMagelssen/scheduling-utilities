@@ -288,7 +288,6 @@ namespace UI.Tables
         {
             row.transform.SetParent(this.transform);
             row.transform.SetAsLastSibling();
-
             return row;
         }
 
