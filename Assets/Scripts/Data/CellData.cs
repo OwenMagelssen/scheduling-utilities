@@ -23,6 +23,9 @@ namespace SchedulingUtilities
         public RectTransform RectTransform => _rectTransform;
         private RectTransform _rectTransform;
 
+        public CellDataType CellDataType => _cellDataType;
+        private CellDataType _cellDataType;
+
         public string DisplayName => _dataDisplayString;
         private string _dataDisplayString;
 
@@ -44,6 +47,7 @@ namespace SchedulingUtilities
 
         public void SetData(string data)
         {
+            _cellDataType = CellDataType.StringData;
             _stringData = data;
             _dataDisplayString = data;
             text.text = _dataDisplayString;
@@ -51,6 +55,7 @@ namespace SchedulingUtilities
 
         public void SetData(float data)
         {
+            _cellDataType = CellDataType.FloatData;
             _floatData = data;
             _dataDisplayString = data.ToString(_culture);
             text.text = _dataDisplayString;
@@ -58,6 +63,7 @@ namespace SchedulingUtilities
 
         public void SetData(DateTime data)
         {
+            _cellDataType = CellDataType.DateTimeData;
             _dateTimeData = data;
             _dataDisplayString = data.ToString(_culture);
             text.text = _dataDisplayString;
@@ -65,6 +71,7 @@ namespace SchedulingUtilities
 
         public void SetData(Enum data)
         {
+            _cellDataType = CellDataType.EnumData;
             _enumData = (int)(object)data; //lol
             _dataDisplayString = Regex.Replace(data.ToString(), "([A-Z])", " $1").Trim();
             text.text = _dataDisplayString;

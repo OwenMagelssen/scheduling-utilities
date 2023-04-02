@@ -182,8 +182,7 @@ namespace SchedulingUtilities
                 
                 _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
             }
-            
-            
+
             _columnHeaders.Clear();
             _columnHeaders.Add(CreateColumnHeader("Name", SortByName));
             _columnHeaders.Add(CreateColumnHeader("Title", SortByTitle));

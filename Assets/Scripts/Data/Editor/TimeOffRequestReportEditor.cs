@@ -1,4 +1,4 @@
-
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 
@@ -17,6 +17,18 @@ namespace SchedulingUtilities
 	        _report = target as TimeOffRequestReport;
 			_timeOffRequests = serializedObject.FindProperty("timeOffRequests");
 			_etmReportCsvFilePath = serializedObject.FindProperty("etmReportCsvFilePath");
+        }
+        
+        private void SaveJsonToFile()
+        {
+	        var path = EditorUtility.SaveFilePanel(
+		        "Save report as JSON",
+		        "",
+		        _report.OriginalReportFileName + ".json",
+		        "json");
+
+	        if (path.Length != 0)
+		        File.WriteAllText(path, _report.AsJson());
         }
         
         public override void OnInspectorGUI()
@@ -49,6 +61,9 @@ namespace SchedulingUtilities
 				serializedObject.ApplyModifiedProperties();
 				AssetDatabase.Refresh();
 			}
+			
+			if (GUILayout.Button("Save to JSON File"))
+				SaveJsonToFile();
 			
             serializedObject.ApplyModifiedProperties();
         }

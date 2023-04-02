@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -14,6 +13,8 @@ namespace SchedulingUtilities
 		private readonly EtmTimeOffRequestProcessor _timeOffRequestProcessor = new ();
 		public EtmReportItemProcessor ItemProcessor => _timeOffRequestProcessor;
 		public bool CsvHasHeader => true;
+
+		public string OriginalReportFileName => Path.GetFileNameWithoutExtension(etmReportCsvFilePath);
 
 		public void CreateReport()
 		{
