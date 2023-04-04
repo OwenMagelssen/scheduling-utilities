@@ -24,7 +24,7 @@ namespace SchedulingUtilities
 	        var path = EditorUtility.SaveFilePanel(
 		        "Save report as JSON",
 		        "",
-		        _report.OriginalReportFileName + ".json",
+		        _report.EtmReportFileName + ".json",
 		        "json");
 
 	        if (path.Length != 0)

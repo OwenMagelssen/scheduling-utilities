@@ -243,9 +243,24 @@ namespace SchedulingUtilities
             tableLayout.ClearRows();
         }
 
+        private enum SortType
+        {
+            Name,
+            NameReverse,
+            Title,
+            TitleReverse,
+            TimeOffStart,
+            TimeOffStartReverse,
+            Hours,
+            HoursReverse,
+            
+        }
+
         private void SortByName()
         {
             Debug.Log("Sorted by name");
+            report.SortByName();
+            RedrawRows();
         }
 
         private void SortByTitle()

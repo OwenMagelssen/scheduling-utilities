@@ -10,11 +10,14 @@ namespace SchedulingUtilities
 	{
 		public List<TimeOffRequest> timeOffRequests;
 		public string etmReportCsvFilePath;
-		private readonly EtmTimeOffRequestProcessor _timeOffRequestProcessor = new ();
 		public EtmReportItemProcessor ItemProcessor => _timeOffRequestProcessor;
+		private readonly EtmTimeOffRequestProcessor _timeOffRequestProcessor = new ();
 		public bool CsvHasHeader => true;
 
-		public string OriginalReportFileName => Path.GetFileNameWithoutExtension(etmReportCsvFilePath);
+		public string EtmReportFileName => Path.GetFileNameWithoutExtension(etmReportCsvFilePath);
+
+		private TimeOffRequest.SortName _nameSorter = new();
+		private TimeOffRequest.SortNameReverse _nameReverseSorter = new();
 
 		public void CreateReport()
 		{
@@ -27,6 +30,18 @@ namespace SchedulingUtilities
 			var settings = new JsonSerializerSettings();
 			settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 			return JsonConvert.SerializeObject(timeOffRequests, settings);
+		}
+
+		public void SortByName()
+		{
+			if (timeOffRequests == null) return;
+			timeOffRequests.Sort(_nameSorter);
+		}
+		
+		public void SortByNameReverse()
+		{
+			if (timeOffRequests == null) return;
+			timeOffRequests.Sort(_nameReverseSorter);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 
@@ -42,43 +43,37 @@ namespace SchedulingUtilities
 			throw new NotImplementedException();
 		}
 		
-		private class SortNameAlphabetical : IComparer
+		public class SortName : IComparer<TimeOffRequest>
 		{
-			int IComparer.Compare(object a, object b)
+			public int Compare(TimeOffRequest x, TimeOffRequest y)
 			{
-				TimeOffRequest r1 = (TimeOffRequest)a;
-				TimeOffRequest r2 = (TimeOffRequest)b;
-
-				if (r1 == null && r2 == null)
+				if (x == null && y == null)
 					return 0;
 
-				if (r1 == null)
+				if (x == null)
 					return -1;
 
-				if (r2 == null)
+				if (y == null)
 					return 1;
 
-				return string.Compare(r1.EmployeeName, r2.EmployeeName, StringComparison.CurrentCultureIgnoreCase);
+				return (new CaseInsensitiveComparer()).Compare(x.EmployeeName, y.EmployeeName);
 			}
 		}
 		
-		private class SortNameReverseAlphabetical : IComparer
+		public class SortNameReverse : IComparer<TimeOffRequest>
 		{
-			int IComparer.Compare(object a, object b)
+			public int Compare(TimeOffRequest x, TimeOffRequest y)
 			{
-				TimeOffRequest r1 = (TimeOffRequest)a;
-				TimeOffRequest r2 = (TimeOffRequest)b;
-
-				if (r1 == null && r2 == null)
+				if (x == null && y == null)
 					return 0;
 
-				if (r1 == null)
+				if (x == null)
 					return 1;
 
-				if (r2 == null)
+				if (y == null)
 					return -1;
 
-				return -1 * string.Compare(r1.EmployeeName, r2.EmployeeName, StringComparison.CurrentCultureIgnoreCase);
+				return (new CaseInsensitiveComparer()).Compare(y.EmployeeName, x.EmployeeName);
 			}
 		}
 	}
