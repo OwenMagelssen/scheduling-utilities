@@ -289,7 +289,9 @@ namespace UI.Tables
             return row;
         }
 
-        public void ClearRows()
+        public void ClearRows() => Rows.Clear();
+
+        public void DestroyRows()
         {
             foreach (var row in Rows)
             {

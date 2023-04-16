@@ -145,11 +145,14 @@ namespace SchedulingUtilities
             if (tableLayout == null) return;
             
             _rowDictionary.Clear();
-            tableLayout.ClearRows();
+            tableLayout.DestroyRows();
             tableLayout.RowBackgroundColor = rowColor;
             tableLayout.padding = tablePadding;
             tableLayout.CellPadding = _noPadding;
             tableLayout.CellSpacing = cellSpacing;
+            
+            report.SortByName();
+            _currentSortType = SortType.Name;
             
             var culture = new CultureInfo("en-US");
 
@@ -241,7 +244,10 @@ namespace SchedulingUtilities
 
         private void RedrawRows()
         {
-            CreateTable();
+            tableLayout.ClearRows();
+
+            for (int i = 0; i < report.timeOffRequests.Count; i++)
+                tableLayout.AddRow(_rowDictionary[report.timeOffRequests[i]]);
         }
 
         private enum SortType
@@ -254,19 +260,44 @@ namespace SchedulingUtilities
             TimeOffStartReverse,
             Hours,
             HoursReverse,
-            
+            DateTimeRequested,
+            DateTimeRequestedReverse,
+            Status,
+            StatusReverse
         }
+
+        private SortType _currentSortType;
 
         private void SortByName()
         {
-            Debug.Log("Sorted by name");
-            report.SortByName();
+            if (_currentSortType == SortType.Name)
+            {
+                report.SortByNameReverse();
+                _currentSortType = SortType.NameReverse;
+            }
+            else
+            {
+                report.SortByName();
+                _currentSortType = SortType.Name;
+            }
+            
             RedrawRows();
         }
 
         private void SortByTitle()
         {
-            Debug.Log("Sorted by title");
+            if (_currentSortType == SortType.Name)
+            {
+                // report.SortByTitleReverse();
+                _currentSortType = SortType.TitleReverse;
+            }
+            else
+            {
+                // report.SortByTitle();
+                _currentSortType = SortType.Title;
+            }
+            
+            RedrawRows();
         }
 
         private void SortByTimeOffStart()
