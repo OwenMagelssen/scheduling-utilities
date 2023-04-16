@@ -90,7 +90,10 @@ namespace SchedulingUtilities
 				if (y == null)
 					return 1;
 
-				return (new CaseInsensitiveComparer()).Compare(x.JobTitle, y.JobTitle);
+				int titleCompare = (new CaseInsensitiveComparer()).Compare(x.JobTitle, y.JobTitle);
+				return titleCompare == 0
+					? (new CaseInsensitiveComparer()).Compare(x.EmployeeName, y.EmployeeName)
+					: titleCompare;
 			}
 		}
 		
@@ -107,7 +110,10 @@ namespace SchedulingUtilities
 				if (y == null)
 					return -1;
 
-				return (new CaseInsensitiveComparer()).Compare(y.JobTitle, x.JobTitle);
+				int titleCompare = (new CaseInsensitiveComparer()).Compare(y.JobTitle, x.JobTitle);
+				return titleCompare == 0
+					? (new CaseInsensitiveComparer()).Compare(y.EmployeeName, x.EmployeeName)
+					: titleCompare;
 			}
 		}
 	}
