@@ -144,6 +144,7 @@ namespace SchedulingUtilities
             if (report == null) return;
             if (tableLayout == null) return;
             
+            _rowDictionary.Clear();
             tableLayout.ClearRows();
             tableLayout.RowBackgroundColor = rowColor;
             tableLayout.padding = tablePadding;
@@ -240,7 +241,7 @@ namespace SchedulingUtilities
 
         private void RedrawRows()
         {
-            tableLayout.ClearRows();
+            CreateTable();
         }
 
         private enum SortType
