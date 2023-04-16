@@ -23,7 +23,8 @@ namespace SchedulingUtilities
         public float cellSpacing;
         public float cellPadding;
         public Color rowColor = Color.white;
-        [Header("Row Selection")]
+        
+        [Header("Row Interaction Settings")]
         public ColorBlock rowSelectableColors = new ColorBlock
         {
             normalColor = Color.white,
@@ -34,6 +35,9 @@ namespace SchedulingUtilities
             colorMultiplier = 1.0f,
             fadeDuration = 0.2f
         };
+
+        [Space]
+        public UnityEvent onRowOrderUpdated = new();
 
         private RectTransform _rectTransform;
         private List<float> _columnWidths = new () { 0, 0, 0, 0, 0, 0 };
@@ -242,12 +246,14 @@ namespace SchedulingUtilities
             rt.sizeDelta = new Vector2(rt.sizeDelta.x, tableHeight);
         }
 
-        private void RedrawRows()
+        private void UpdateRowOrder()
         {
             tableLayout.ClearRows();
 
             for (int i = 0; i < report.timeOffRequests.Count; i++)
                 tableLayout.AddRow(_rowDictionary[report.timeOffRequests[i]]);
+
+            onRowOrderUpdated?.Invoke();
         }
 
         private enum SortType
@@ -281,23 +287,23 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.Name;
             }
             
-            RedrawRows();
+            UpdateRowOrder();
         }
 
         private void SortByTitle()
         {
-            if (_currentSortType == SortType.Name)
+            if (_currentSortType == SortType.Title)
             {
-                // report.SortByTitleReverse();
+                report.SortByTitleReverse();
                 _currentSortType = SortType.TitleReverse;
             }
             else
             {
-                // report.SortByTitle();
+                report.SortByTitle();
                 _currentSortType = SortType.Title;
             }
             
-            RedrawRows();
+            UpdateRowOrder();
         }
 
         private void SortByTimeOffStart()

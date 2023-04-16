@@ -76,5 +76,39 @@ namespace SchedulingUtilities
 				return (new CaseInsensitiveComparer()).Compare(y.EmployeeName, x.EmployeeName);
 			}
 		}
+		
+		public class SortTitle : IComparer<TimeOffRequest>
+		{
+			public int Compare(TimeOffRequest x, TimeOffRequest y)
+			{
+				if (x == null && y == null)
+					return 0;
+
+				if (x == null)
+					return -1;
+
+				if (y == null)
+					return 1;
+
+				return (new CaseInsensitiveComparer()).Compare(x.JobTitle, y.JobTitle);
+			}
+		}
+		
+		public class SortTitleReverse : IComparer<TimeOffRequest>
+		{
+			public int Compare(TimeOffRequest x, TimeOffRequest y)
+			{
+				if (x == null && y == null)
+					return 0;
+
+				if (x == null)
+					return 1;
+
+				if (y == null)
+					return -1;
+
+				return (new CaseInsensitiveComparer()).Compare(y.JobTitle, x.JobTitle);
+			}
+		}
 	}
 }

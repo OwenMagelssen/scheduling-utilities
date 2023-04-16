@@ -18,6 +18,8 @@ namespace SchedulingUtilities
 
 		private TimeOffRequest.SortName _nameSorter = new();
 		private TimeOffRequest.SortNameReverse _nameReverseSorter = new();
+		private TimeOffRequest.SortTitle _titleSorter = new();
+		private TimeOffRequest.SortTitleReverse _titleReverseSorter = new ();
 
 		public void CreateReport()
 		{
@@ -32,16 +34,12 @@ namespace SchedulingUtilities
 			return JsonConvert.SerializeObject(timeOffRequests, settings);
 		}
 
-		public void SortByName()
-		{
-			if (timeOffRequests == null) return;
-			timeOffRequests.Sort(_nameSorter);
-		}
+		public void SortByName() => timeOffRequests?.Sort(_nameSorter);
 		
-		public void SortByNameReverse()
-		{
-			if (timeOffRequests == null) return;
-			timeOffRequests.Sort(_nameReverseSorter);
-		}
+		public void SortByNameReverse() => timeOffRequests?.Sort(_nameReverseSorter);
+		
+		public void SortByTitle() => timeOffRequests?.Sort(_titleSorter);
+		
+		public void SortByTitleReverse() => timeOffRequests?.Sort(_titleReverseSorter);
 	}
 }
