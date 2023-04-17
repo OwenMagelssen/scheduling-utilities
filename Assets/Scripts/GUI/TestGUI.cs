@@ -222,7 +222,8 @@ namespace SchedulingUtilities
             _columnHeaders.Add(CreateColumnHeader("Hours", SortByHours, Column.Hours));
             _columnHeaders.Add(CreateColumnHeader("Requested On", SortByDateTimeRequested, Column.Requested));
             _columnHeaders.Add(CreateColumnHeader("Status", SortByStatus, Column.Status));
-            
+
+            _currentSortType = SortType.NameReverse;
             SortByName();
             RecalculateLayout();
         }
