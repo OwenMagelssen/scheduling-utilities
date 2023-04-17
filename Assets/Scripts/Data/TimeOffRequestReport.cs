@@ -16,10 +16,18 @@ namespace SchedulingUtilities
 
 		public string EtmReportFileName => Path.GetFileNameWithoutExtension(etmReportCsvFilePath);
 
-		private TimeOffRequest.SortName _nameSorter = new();
-		private TimeOffRequest.SortNameReverse _nameReverseSorter = new();
-		private TimeOffRequest.SortTitle _titleSorter = new();
-		private TimeOffRequest.SortTitleReverse _titleReverseSorter = new ();
+		private readonly TimeOffRequest.SortName _nameSorter = new();
+		private readonly TimeOffRequest.SortNameReverse _nameReverseSorter = new();
+		private readonly TimeOffRequest.SortTitle _titleSorter = new();
+		private readonly TimeOffRequest.SortTitleReverse _titleReverseSorter = new();
+		private readonly TimeOffRequest.SortTimeOffStart _timeOffStartSorter = new();
+		private readonly TimeOffRequest.SortTimeOffStartReverse _timeOffStartReverseSorter = new();
+		private readonly TimeOffRequest.SortHours _hoursSorter = new();
+		private readonly TimeOffRequest.SortHoursReverse _hoursReverseSorter = new();
+		private readonly TimeOffRequest.SortDateTimeRequested _dateTimeRequestedSorter = new();
+		private readonly TimeOffRequest.SortDateTimeRequestedReverse _dateTimeRequestedReverseSorter = new();
+		private readonly TimeOffRequest.SortStatus _statusSorter = new();
+		private readonly TimeOffRequest.SortStatusReverse _statusReverseSorter = new();
 
 		public void CreateReport()
 		{
@@ -41,5 +49,21 @@ namespace SchedulingUtilities
 		public void SortByTitle() => timeOffRequests?.Sort(_titleSorter);
 		
 		public void SortByTitleReverse() => timeOffRequests?.Sort(_titleReverseSorter);
+		
+		public void SortByTimeOffStart() => timeOffRequests?.Sort(_timeOffStartSorter);
+		
+		public void SortByTimeOffStartReverse() => timeOffRequests?.Sort(_timeOffStartReverseSorter);
+		
+		public void SortByHours() => timeOffRequests?.Sort(_hoursSorter);
+		
+		public void SortByHoursReverse() => timeOffRequests?.Sort(_hoursReverseSorter);
+		
+		public void SortByDateTimeRequested() => timeOffRequests?.Sort(_dateTimeRequestedSorter);
+		
+		public void SortByDateTimeRequestedReverse() => timeOffRequests?.Sort(_dateTimeRequestedReverseSorter);
+		
+		public void SortByStatus() => timeOffRequests?.Sort(_statusSorter);
+		
+		public void SortByStatusReverse() => timeOffRequests?.Sort(_statusReverseSorter);
 	}
 }

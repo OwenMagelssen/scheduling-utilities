@@ -308,22 +308,66 @@ namespace SchedulingUtilities
 
         private void SortByTimeOffStart()
         {
-            Debug.Log("Sorted by time off start");
+            if (_currentSortType == SortType.TimeOffStart)
+            {
+                report.SortByTimeOffStartReverse();
+                _currentSortType = SortType.TimeOffStartReverse;
+            }
+            else
+            {
+                report.SortByTimeOffStart();
+                _currentSortType = SortType.TimeOffStart;
+            }
+            
+            UpdateRowOrder();
         }
 
         private void SortByHours()
         {
-            Debug.Log("Sorted by hours");
+            if (_currentSortType == SortType.Hours)
+            {
+                report.SortByHoursReverse();
+                _currentSortType = SortType.HoursReverse;
+            }
+            else
+            {
+                report.SortByHours();
+                _currentSortType = SortType.Hours;
+            }
+            
+            UpdateRowOrder();
         }
 
         private void SortByDateTimeRequested()
         {
-            Debug.Log("Sorted by time requested");
+            if (_currentSortType == SortType.DateTimeRequested)
+            {
+                report.SortByDateTimeRequestedReverse();
+                _currentSortType = SortType.DateTimeRequestedReverse;
+            }
+            else
+            {
+                report.SortByDateTimeRequested();
+                _currentSortType = SortType.DateTimeRequested;
+            }
+            
+            UpdateRowOrder();
         }
         
         private void SortByStatus()
         {
-            Debug.Log("Sorted by status");
+            if (_currentSortType == SortType.Status)
+            {
+                report.SortByStatusReverse();
+                _currentSortType = SortType.StatusReverse;
+            }
+            else
+            {
+                report.SortByStatus();
+                _currentSortType = SortType.Status;
+            }
+            
+            UpdateRowOrder();
         }
 
         private void SelectRequest(TimeOffRequest request)
