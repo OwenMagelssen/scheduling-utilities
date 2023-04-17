@@ -11,6 +11,32 @@ namespace SchedulingUtilities
 {
     public class TestGUI : MonoBehaviour
     {
+        public enum Column
+        {
+            Name,
+            Title,
+            Start,
+            Hours,
+            Requested,
+            Status
+        }
+
+        public enum SortType
+        {
+            Name,
+            NameReverse,
+            Title,
+            TitleReverse,
+            TimeOffStart,
+            TimeOffStartReverse,
+            Hours,
+            HoursReverse,
+            DateTimeRequested,
+            DateTimeRequestedReverse,
+            Status,
+            StatusReverse
+        }
+        
         public ColumnHeader columnHeaderPrefab;
         public CellData stringCellPrefab;
         public TimeOffRequestReport report;
@@ -36,8 +62,7 @@ namespace SchedulingUtilities
             fadeDuration = 0.2f
         };
 
-        [Space]
-        public UnityEvent onRowOrderUpdated = new();
+        public event Action<SortType> OnSorted;
 
         private RectTransform _rectTransform;
         private List<float> _columnWidths = new () { 0, 0, 0, 0, 0, 0 };
@@ -132,11 +157,13 @@ namespace SchedulingUtilities
             return cellData.Text.preferredWidth + cellPadding * 2.0f;
         }
 
-        private ColumnHeader CreateColumnHeader(string label, Action sortFunction)
+        private ColumnHeader CreateColumnHeader(string label, Action sortFunction, Column column)
         {
             var header = Instantiate(columnHeaderPrefab, tableHeaderRect);
-            header.label.text = label;
-            header.button.onClick.AddListener(new UnityAction(sortFunction));
+            header.Label.text = label;
+            header.Button.onClick.AddListener(new UnityAction(sortFunction));
+            header.SortIndicator.Setup(column);
+            OnSorted += header.SortIndicator.SetIndicator;
             header.RectTransform.pivot = Vector2.zero;
             header.RectTransform.anchorMin = header.RectTransform.anchorMax = Vector2.zero;
             return header;
@@ -154,9 +181,6 @@ namespace SchedulingUtilities
             tableLayout.padding = tablePadding;
             tableLayout.CellPadding = _noPadding;
             tableLayout.CellSpacing = cellSpacing;
-            
-            report.SortByName();
-            _currentSortType = SortType.Name;
             
             var culture = new CultureInfo("en-US");
 
@@ -192,12 +216,14 @@ namespace SchedulingUtilities
             }
 
             _columnHeaders.Clear();
-            _columnHeaders.Add(CreateColumnHeader("Name", SortByName));
-            _columnHeaders.Add(CreateColumnHeader("Title", SortByTitle));
-            _columnHeaders.Add(CreateColumnHeader("Time Off Start", SortByTimeOffStart));
-            _columnHeaders.Add(CreateColumnHeader("Hours", SortByHours));
-            _columnHeaders.Add(CreateColumnHeader("Requested On", SortByDateTimeRequested));
-            _columnHeaders.Add(CreateColumnHeader("Status", SortByStatus));
+            _columnHeaders.Add(CreateColumnHeader("Name", SortByName, Column.Name));
+            _columnHeaders.Add(CreateColumnHeader("Title", SortByTitle, Column.Title));
+            _columnHeaders.Add(CreateColumnHeader("Time Off Start", SortByTimeOffStart, Column.Start));
+            _columnHeaders.Add(CreateColumnHeader("Hours", SortByHours, Column.Hours));
+            _columnHeaders.Add(CreateColumnHeader("Requested On", SortByDateTimeRequested, Column.Requested));
+            _columnHeaders.Add(CreateColumnHeader("Status", SortByStatus, Column.Status));
+            
+            SortByName();
             RecalculateLayout();
         }
 
@@ -252,24 +278,6 @@ namespace SchedulingUtilities
 
             for (int i = 0; i < report.timeOffRequests.Count; i++)
                 tableLayout.AddRow(_rowDictionary[report.timeOffRequests[i]]);
-
-            onRowOrderUpdated?.Invoke();
-        }
-
-        private enum SortType
-        {
-            Name,
-            NameReverse,
-            Title,
-            TitleReverse,
-            TimeOffStart,
-            TimeOffStartReverse,
-            Hours,
-            HoursReverse,
-            DateTimeRequested,
-            DateTimeRequestedReverse,
-            Status,
-            StatusReverse
         }
 
         private SortType _currentSortType;
@@ -287,6 +295,7 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.Name;
             }
             
+            OnSorted?.Invoke(_currentSortType);
             UpdateRowOrder();
         }
 
@@ -303,6 +312,7 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.Title;
             }
             
+            OnSorted?.Invoke(_currentSortType);
             UpdateRowOrder();
         }
 
@@ -319,6 +329,7 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.TimeOffStart;
             }
             
+            OnSorted?.Invoke(_currentSortType);
             UpdateRowOrder();
         }
 
@@ -335,6 +346,7 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.Hours;
             }
             
+            OnSorted?.Invoke(_currentSortType);
             UpdateRowOrder();
         }
 
@@ -351,6 +363,7 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.DateTimeRequested;
             }
             
+            OnSorted?.Invoke(_currentSortType);
             UpdateRowOrder();
         }
         
@@ -367,6 +380,7 @@ namespace SchedulingUtilities
                 _currentSortType = SortType.Status;
             }
             
+            OnSorted?.Invoke(_currentSortType);
             UpdateRowOrder();
         }
 
