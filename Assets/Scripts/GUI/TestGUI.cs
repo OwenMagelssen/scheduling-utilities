@@ -93,7 +93,12 @@ namespace SchedulingUtilities
 
         private void Start()
         {
-            CreateTable();
+            // CreateTable();
+        }
+
+        public void CreateNewReportAndTable(string csv)
+        {
+            
         }
 
         private float AddStringCellGetWidth(TableRow row, CellData cellData, string value)
