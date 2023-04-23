@@ -21,22 +21,6 @@ namespace SchedulingUtilities
             Status
         }
 
-        public enum SortType
-        {
-            Name,
-            NameReverse,
-            Title,
-            TitleReverse,
-            TimeOffStart,
-            TimeOffStartReverse,
-            Hours,
-            HoursReverse,
-            DateTimeRequested,
-            DateTimeRequestedReverse,
-            Status,
-            StatusReverse
-        }
-        
         public ColumnHeader columnHeaderPrefab;
         public CellData stringCellPrefab;
         public TimeOffRequestReport report;
@@ -62,8 +46,6 @@ namespace SchedulingUtilities
             fadeDuration = 0.2f
         };
 
-        public event Action<SortType> OnSorted;
-
         private RectTransform _rectTransform;
         private List<float> _columnWidths = new () { 0, 0, 0, 0, 0, 0 };
         private List<ColumnHeader> _columnHeaders = new();
@@ -71,6 +53,7 @@ namespace SchedulingUtilities
         private Dictionary<TimeOffRequest, TableRow> _rowDictionary = new();
         private float _scrollbarWidth;
         private RectOffset _noPadding;
+        private TimeOffRequestReportSorter _sorter;
 
         private void Awake()
         {
@@ -172,7 +155,7 @@ namespace SchedulingUtilities
             header.Label.text = label;
             header.Button.onClick.AddListener(new UnityAction(sortFunction));
             header.SortIndicator.Setup(column);
-            OnSorted += header.SortIndicator.SetIndicator;
+            _sorter.OnSorted += header.SortIndicator.SetIndicator;
             header.RectTransform.pivot = Vector2.zero;
             header.RectTransform.anchorMin = header.RectTransform.anchorMax = Vector2.zero;
             return header;
@@ -184,6 +167,8 @@ namespace SchedulingUtilities
             if (report == null) return;
             if (tableLayout == null) return;
             
+            _sorter = new(report);
+            _sorter.OnSorted += (sortType) => UpdateRowOrder();
             _rowDictionary.Clear();
             tableLayout.DestroyRows();
             tableLayout.RowBackgroundColor = rowColor;
@@ -225,15 +210,15 @@ namespace SchedulingUtilities
             }
 
             _columnHeaders.Clear();
-            _columnHeaders.Add(CreateColumnHeader("Name", SortByName, Column.Name));
-            _columnHeaders.Add(CreateColumnHeader("Title", SortByTitle, Column.Title));
-            _columnHeaders.Add(CreateColumnHeader("Time Off Start", SortByTimeOffStart, Column.Start));
-            _columnHeaders.Add(CreateColumnHeader("Hours", SortByHours, Column.Hours));
-            _columnHeaders.Add(CreateColumnHeader("Requested On", SortByDateTimeRequested, Column.Requested));
-            _columnHeaders.Add(CreateColumnHeader("Status", SortByStatus, Column.Status));
+            _columnHeaders.Add(CreateColumnHeader("Name", _sorter.SortByName, Column.Name));
+            _columnHeaders.Add(CreateColumnHeader("Title", _sorter.SortByTitle, Column.Title));
+            _columnHeaders.Add(CreateColumnHeader("Time Off Start", _sorter.SortByTimeOffStart, Column.Start));
+            _columnHeaders.Add(CreateColumnHeader("Hours", _sorter.SortByHours, Column.Hours));
+            _columnHeaders.Add(CreateColumnHeader("Requested On", _sorter.SortByDateTimeRequested, Column.Requested));
+            _columnHeaders.Add(CreateColumnHeader("Status", _sorter.SortByStatus, Column.Status));
 
-            _currentSortType = SortType.NameReverse;
-            SortByName();
+            // _currentSortType = TimeOffRequestReportSorter.SortType.NameReverse;
+            // SortByName();
             RecalculateLayout();
         }
 
@@ -290,110 +275,6 @@ namespace SchedulingUtilities
                 tableLayout.AddRow(_rowDictionary[report.timeOffRequests[i]]);
         }
 
-        private SortType _currentSortType;
-
-        private void SortByName()
-        {
-            if (_currentSortType == SortType.Name)
-            {
-                report.SortByNameReverse();
-                _currentSortType = SortType.NameReverse;
-            }
-            else
-            {
-                report.SortByName();
-                _currentSortType = SortType.Name;
-            }
-            
-            OnSorted?.Invoke(_currentSortType);
-            UpdateRowOrder();
-        }
-
-        private void SortByTitle()
-        {
-            if (_currentSortType == SortType.Title)
-            {
-                report.SortByTitleReverse();
-                _currentSortType = SortType.TitleReverse;
-            }
-            else
-            {
-                report.SortByTitle();
-                _currentSortType = SortType.Title;
-            }
-            
-            OnSorted?.Invoke(_currentSortType);
-            UpdateRowOrder();
-        }
-
-        private void SortByTimeOffStart()
-        {
-            if (_currentSortType == SortType.TimeOffStart)
-            {
-                report.SortByTimeOffStartReverse();
-                _currentSortType = SortType.TimeOffStartReverse;
-            }
-            else
-            {
-                report.SortByTimeOffStart();
-                _currentSortType = SortType.TimeOffStart;
-            }
-            
-            OnSorted?.Invoke(_currentSortType);
-            UpdateRowOrder();
-        }
-
-        private void SortByHours()
-        {
-            if (_currentSortType == SortType.Hours)
-            {
-                report.SortByHoursReverse();
-                _currentSortType = SortType.HoursReverse;
-            }
-            else
-            {
-                report.SortByHours();
-                _currentSortType = SortType.Hours;
-            }
-            
-            OnSorted?.Invoke(_currentSortType);
-            UpdateRowOrder();
-        }
-
-        private void SortByDateTimeRequested()
-        {
-            if (_currentSortType == SortType.DateTimeRequested)
-            {
-                report.SortByDateTimeRequestedReverse();
-                _currentSortType = SortType.DateTimeRequestedReverse;
-            }
-            else
-            {
-                report.SortByDateTimeRequested();
-                _currentSortType = SortType.DateTimeRequested;
-            }
-            
-            OnSorted?.Invoke(_currentSortType);
-            UpdateRowOrder();
-        }
-        
-        private void SortByStatus()
-        {
-            if (_currentSortType == SortType.Status)
-            {
-                report.SortByStatusReverse();
-                _currentSortType = SortType.StatusReverse;
-            }
-            else
-            {
-                report.SortByStatus();
-                _currentSortType = SortType.Status;
-            }
-            
-            OnSorted?.Invoke(_currentSortType);
-            UpdateRowOrder();
-        }
-
         private void SelectRequest(TimeOffRequest request)
         {
             requestInspector.gameObject.SetActive(true);
@@ -421,7 +302,7 @@ namespace SchedulingUtilities
         // {
         //     if (report == null) return;
         //     if (tableLayout == null) return;
-        //     
+        //     DoImmediateModeGUI();
         // }
     }
 }

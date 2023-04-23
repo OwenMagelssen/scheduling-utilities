@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using SortType = SchedulingUtilities.TestGUI.SortType;
+using SortType = SchedulingUtilities.TimeOffRequestReportSorter.SortType;
 using Column = SchedulingUtilities.TestGUI.Column;
 
 namespace SchedulingUtilities
