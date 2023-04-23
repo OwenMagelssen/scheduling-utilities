@@ -34,6 +34,12 @@ namespace SchedulingUtilities
 			var report = this as IReport;
 			timeOffRequests = report.ProcessEtmReport<TimeOffRequest>(etmReportCsvFilePath);
 		}
+		
+		public void CreateReport(string pathToCSV)
+		{
+			var report = this as IReport;
+			timeOffRequests = report.ProcessEtmReport<TimeOffRequest>(pathToCSV);
+		}
 
 		public string AsJson()
 		{

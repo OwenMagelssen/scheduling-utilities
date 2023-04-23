@@ -13,7 +13,7 @@ namespace SchedulingUtilities
             StandaloneFileBrowser.OpenFilePanelAsync("Open ETM Report", "", extensions, false, strings =>
             {
                 if (strings == null || strings.Length == 0) return;
-                // testGUI.CreateNewReportAndTable();
+                testGUI.CreateNewReportAndTable(strings[0]);
             });
         }
     }

@@ -96,9 +96,11 @@ namespace SchedulingUtilities
             // CreateTable();
         }
 
-        public void CreateNewReportAndTable(string csv)
+        public void CreateNewReportAndTable(string pathToCsv)
         {
-            
+            report = ScriptableObject.CreateInstance<TimeOffRequestReport>();
+            report.CreateReport(pathToCsv);
+            CreateTable();
         }
 
         private float AddStringCellGetWidth(TableRow row, CellData cellData, string value)
