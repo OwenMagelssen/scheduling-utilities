@@ -93,7 +93,9 @@ namespace SchedulingUtilities
 
         private void Start()
         {
-            // CreateTable();
+#if UNITY_EDITOR
+            CreateTable();
+#endif
         }
 
         public void CreateNewReportAndTable(string pathToCsv)

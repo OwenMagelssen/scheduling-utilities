@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -10, y: 0}
-  m_SizeDelta: {x: 0, y: -10}
+  m_SizeDelta: {x: 0, y: -14}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &1764456685460654517
 CanvasRenderer:
@@ -417,7 +417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.9339623, g: 0.9339623, b: 0.9339623, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -445,7 +445,7 @@ MonoBehaviour:
   m_FlipVertical: 0
   m_CornerStyle: 0
   m_RectangleCornerRadius: {x: 0, y: 0, z: 0, w: 0}
-  m_TriangleCornerRadius: {x: 2, y: 2, z: 2}
+  m_TriangleCornerRadius: {x: 1.14, y: 1.14, z: 1.14}
   m_TriangleUniformCornerRadius: 1
   m_RectangleUniformCornerRadius: 1
   m_CircleRadius: 0
