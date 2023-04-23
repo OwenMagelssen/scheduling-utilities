@@ -65,7 +65,7 @@ namespace SchedulingUtilities
         {
             _cellDataType = CellDataType.DateTimeData;
             _dateTimeData = data;
-            _dataDisplayString = data.ToString(_culture);
+            _dataDisplayString = data.ToString("MM/dd/yyyy");//data.ToString(_culture);
             text.text = _dataDisplayString;
         }
 
