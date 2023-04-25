@@ -4,15 +4,20 @@ namespace SchedulingUtilities
 {
     public class TimeOffRequestReportSorter
     {
+        public event Action<SortType> OnSorted;
+        public SortType CurrentSortType => _currentSortType;
+        private SortType _currentSortType;
         private readonly TimeOffRequestReport _report;
-        
+
         public TimeOffRequestReportSorter(TimeOffRequestReport report)
         {
-            this._report = report;
+            _report = report;
+            _currentSortType = SortType.Unsorted;
         }
         
         public enum SortType
         {
+            Unsorted,
             Name,
             NameReverse,
             Title,
@@ -26,11 +31,6 @@ namespace SchedulingUtilities
             Status,
             StatusReverse
         }
-
-        public event Action<SortType> OnSorted;
-        
-        public SortType CurrentSortType => _currentSortType;
-        private SortType _currentSortType;
 
         public void SortByName()
         {

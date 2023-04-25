@@ -87,24 +87,15 @@ namespace SchedulingUtilities
             report.CreateReport(pathToCsv);
             CreateTable();
         }
-
-        private float AddStringCellGetWidth(TableRow row, CellData cellData, string value)
-        {
-            _allCellTexts.Add(cellData.Text);
-            var rt = cellData.GetComponent<RectTransform>();
-            rt.pivot = Vector2.zero;
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.sizeDelta = Vector2.zero;
-            row.AddCell(rt);
-            cellData.Text.margin = Vector4.one * cellPadding;
-            cellData.SetData(value);
-            cellData.Text.ForceMeshUpdate();
-            return cellData.Text.preferredWidth + cellPadding * 2.0f;
-        }
         
-        private float AddFloatCellGetWidth(TableRow row, CellData cellData, float value)
+        private float AddCellGetWidth(TableRow row, CellData cellData)
         {
+            if (cellData.CellDataType == CellDataType.None)
+            {
+                Debug.LogWarning("Trying to add cell with uninitialized data.");
+                return 0;
+            }
+            
             _allCellTexts.Add(cellData.Text);
             var rt = cellData.GetComponent<RectTransform>();
             rt.pivot = Vector2.zero;
@@ -113,40 +104,36 @@ namespace SchedulingUtilities
             rt.sizeDelta = Vector2.zero;
             row.AddCell(rt);
             cellData.Text.margin = Vector4.one * cellPadding;
-            cellData.SetData(value);
-            cellData.Text.ForceMeshUpdate();
-            return cellData.Text.preferredWidth + cellPadding * 2.0f;
-        }
-        
-        private float AddDateTimeCellGetWidth(TableRow row, CellData cellData, DateTime value)
-        {
-            _allCellTexts.Add(cellData.Text);
-            var rt = cellData.GetComponent<RectTransform>();
-            rt.pivot = Vector2.zero;
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.sizeDelta = Vector2.zero;
-            row.AddCell(rt);
-            cellData.Text.margin = Vector4.one * cellPadding;
-            cellData.SetData(value);
             cellData.Text.ForceMeshUpdate();
             return cellData.Text.preferredWidth + cellPadding * 2.0f;
         }
 
-        private float AddEnumCellGetWidth(TableRow row, CellData cellData, Enum value, Color? cellColor = null)
+        private float AddCellGetWidth(TableRow row, CellData cellData, string value)
         {
-            _allCellTexts.Add(cellData.Text);
-            var rt = cellData.GetComponent<RectTransform>();
-            rt.pivot = Vector2.zero;
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.sizeDelta = Vector2.zero;
-            row.AddCell(rt);
-            cellData.Text.margin = Vector4.one * cellPadding;
-            cellData.SetColor((cellColor ?? Color.clear));
             cellData.SetData(value);
-            cellData.Text.ForceMeshUpdate();
-            return cellData.Text.preferredWidth + cellPadding * 2.0f;
+            return AddCellGetWidth(row, cellData);
+        }
+        
+        private float AddCellGetWidth(TableRow row, CellData cellData, float value)
+        {
+            cellData.SetData(value);
+            return AddCellGetWidth(row, cellData);
+        }
+        
+        private float AddCellGetWidth(TableRow row, CellData cellData, DateTime value)
+        {
+            cellData.SetData(value);
+            return AddCellGetWidth(row, cellData);
+        }
+
+        private float AddCellGetWidth(TableRow row, CellData cellData, Enum value, Color? cellColor = null)
+        {
+            cellData.SetData(value);
+            
+            if (cellColor != null)
+                cellData.SetColor(cellColor.Value);
+            
+            return AddCellGetWidth(row, cellData);
         }
 
         private ColumnHeader CreateColumnHeader(string label, Action sortFunction, Column column)
@@ -192,11 +179,11 @@ namespace SchedulingUtilities
                 selectable.colors = rowSelectableColors;
                 button.onClick.AddListener(() => SelectRequest(request));
                 
-                _columnWidths[0] = Mathf.Max(_columnWidths[0], AddStringCellGetWidth(row, Instantiate(stringCellPrefab), request.EmployeeName));
-                _columnWidths[1] = Mathf.Max(_columnWidths[1], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.JobTitle));
-                _columnWidths[2] = Mathf.Max(_columnWidths[2], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
-                _columnWidths[3] = Mathf.Max(_columnWidths[3], AddFloatCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
-                _columnWidths[4] = Mathf.Max(_columnWidths[4], AddDateTimeCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
+                _columnWidths[0] = Mathf.Max(_columnWidths[0], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.EmployeeName));
+                _columnWidths[1] = Mathf.Max(_columnWidths[1], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.JobTitle));
+                _columnWidths[2] = Mathf.Max(_columnWidths[2], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
+                _columnWidths[3] = Mathf.Max(_columnWidths[3], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
+                _columnWidths[4] = Mathf.Max(_columnWidths[4], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
                 
                 Color statusColor = (request.Status) switch
                 {
@@ -206,7 +193,7 @@ namespace SchedulingUtilities
                     _ => Color.clear
                 };
                 
-                _columnWidths[5] = Mathf.Max(_columnWidths[5], AddEnumCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
+                _columnWidths[5] = Mathf.Max(_columnWidths[5], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
             }
 
             _columnHeaders.Clear();
@@ -217,14 +204,14 @@ namespace SchedulingUtilities
             _columnHeaders.Add(CreateColumnHeader("Requested On", _sorter.SortByDateTimeRequested, Column.Requested));
             _columnHeaders.Add(CreateColumnHeader("Status", _sorter.SortByStatus, Column.Status));
 
-            // _currentSortType = TimeOffRequestReportSorter.SortType.NameReverse;
-            // SortByName();
+            _sorter.SortByName();
             RecalculateLayout();
         }
 
         [ContextMenu("Recalculate Layout")]
         public void RecalculateLayout()
         {
+            // if (Application.q)
             _scrollbarWidth = verticalScrollbar == null || !verticalScrollbar.gameObject.activeInHierarchy ? 0 : verticalScrollbar.rect.width;
             
             float columnWidthSum = 0;

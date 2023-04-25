@@ -9,6 +9,7 @@ namespace SchedulingUtilities
 {
     public enum CellDataType
     {
+        None,
         StringData,
         FloatData,
         DateTimeData,
