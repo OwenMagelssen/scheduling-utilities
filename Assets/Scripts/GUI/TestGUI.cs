@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Windows.Forms;
 using UI.Tables;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Button = UnityEngine.UI.Button;
 
 namespace SchedulingUtilities
 {
@@ -145,10 +147,23 @@ namespace SchedulingUtilities
             _sorter.OnSorted += header.SortIndicator.SetIndicator;
             header.RectTransform.pivot = Vector2.zero;
             header.RectTransform.anchorMin = header.RectTransform.anchorMax = Vector2.zero;
+            
+            // var rt = header.GetComponent<RectTransform>();
+            // rt.pivot = Vector2.zero;
+            // rt.anchorMin = Vector2.zero;
+            // rt.anchorMax = Vector2.one;
+            // rt.sizeDelta = Vector2.zero;
+            var padding = Vector4.one * cellPadding;
+            padding.z += header.SortIndicator.indicatorImage.rectTransform.rect.width + cellPadding;
+            header.Label.margin = padding;
+            header.SortIndicator.indicatorImage.rectTransform.anchoredPosition = new Vector2(-cellPadding, 0);
+            header.Label.ForceMeshUpdate();
+            header.Width = header.Label.preferredWidth + cellPadding * 3.0f + header.SortIndicator.indicatorImage.rectTransform.rect.width;
+            
             return header;
         }
 
-        [ContextMenu("Create Table")]
+        [UnityEngine.ContextMenu("Create Table")]
         private void CreateTable()
         {
             if (report == null) return;
@@ -165,8 +180,16 @@ namespace SchedulingUtilities
             
             var culture = new CultureInfo("en-US");
 
+            _columnHeaders.Clear();
+            _columnHeaders.Add(CreateColumnHeader("Name", _sorter.SortByName, Column.Name));
+            _columnHeaders.Add(CreateColumnHeader("Title", _sorter.SortByTitle, Column.Title));
+            _columnHeaders.Add(CreateColumnHeader("Time Off Start", _sorter.SortByTimeOffStart, Column.Start));
+            _columnHeaders.Add(CreateColumnHeader("Hours", _sorter.SortByHours, Column.Hours));
+            _columnHeaders.Add(CreateColumnHeader("Requested On", _sorter.SortByDateTimeRequested, Column.Requested));
+            _columnHeaders.Add(CreateColumnHeader("Status", _sorter.SortByStatus, Column.Status));
+            
             for (int i = 0; i < _columnWidths.Count; i++)
-                _columnWidths[i] = 0;
+                _columnWidths[i] = _columnHeaders[i].Width;
 
             for (int i = 0; i < report.timeOffRequests.Count; i++)
             {
@@ -196,19 +219,11 @@ namespace SchedulingUtilities
                 _columnWidths[5] = Mathf.Max(_columnWidths[5], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
             }
 
-            _columnHeaders.Clear();
-            _columnHeaders.Add(CreateColumnHeader("Name", _sorter.SortByName, Column.Name));
-            _columnHeaders.Add(CreateColumnHeader("Title", _sorter.SortByTitle, Column.Title));
-            _columnHeaders.Add(CreateColumnHeader("Time Off Start", _sorter.SortByTimeOffStart, Column.Start));
-            _columnHeaders.Add(CreateColumnHeader("Hours", _sorter.SortByHours, Column.Hours));
-            _columnHeaders.Add(CreateColumnHeader("Requested On", _sorter.SortByDateTimeRequested, Column.Requested));
-            _columnHeaders.Add(CreateColumnHeader("Status", _sorter.SortByStatus, Column.Status));
-
             _sorter.SortByName();
             RecalculateLayout();
         }
 
-        [ContextMenu("Recalculate Layout")]
+        [UnityEngine.ContextMenu("Recalculate Layout")]
         public void RecalculateLayout()
         {
             // if (Application.q)
@@ -239,6 +254,7 @@ namespace SchedulingUtilities
                 _columnHeaders[i].RectTransform.anchoredPosition = new Vector2(xHeaderPos, 0);
                 _columnHeaders[i].RectTransform.sizeDelta =
                     new Vector2(scaledColumnWidths[i], tableHeaderRect.rect.height);
+                _columnHeaders[i].Label.fontSize = scaledFontSize - cellPadding * 2.0f;
                 xHeaderPos += scaledColumnWidths[i];
             }
             

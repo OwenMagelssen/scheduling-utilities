@@ -15,6 +15,8 @@ namespace SchedulingUtilities
 		
 		public RectTransform RectTransform => _rectTransform;
 		private RectTransform _rectTransform;
+		
+		public float Width { get; set; }
 
 		private void Awake()
 		{
