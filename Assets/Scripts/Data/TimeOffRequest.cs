@@ -10,6 +10,16 @@ namespace SchedulingUtilities
 	public class TimeOffRequest : ReportItem, ISerializationCallbackReceiver
 	{
 		public string EmployeeName;
+		public string EmployeeNameFirstLast
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(EmployeeName)) return string.Empty;
+				var lastFirstArr = EmployeeName.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+				if (lastFirstArr.Length != 2) return string.Empty;
+				return $"{lastFirstArr[1]} {lastFirstArr[0]}";
+			}
+		}
 		public JobTitle JobTitle;
 		public DateTime TimeOffStart;
 		public float Hours;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Forms;
 using UI.Tables;
 using UnityEngine;
 using TMPro;
@@ -78,9 +77,15 @@ namespace SchedulingUtilities
 
         private void Start()
         {
-#if UNITY_EDITOR
-            CreateTable();
-#endif
+// #if UNITY_EDITOR
+//             CreateTable();
+// #endif
+        }
+        
+        public void GenerateTestEmailFile()
+        {
+            if (report == null) return;
+            GenerateEmail.FromTimeOffRequestReport(report);
         }
 
         public void CreateNewReportAndTable(string pathToCsv)

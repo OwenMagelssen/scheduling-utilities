@@ -13,6 +13,8 @@ namespace SchedulingUtilities
 		public EtmReportItemProcessor ItemProcessor => _timeOffRequestProcessor;
 		private readonly EtmTimeOffRequestProcessor _timeOffRequestProcessor = new ();
 		public bool CsvHasHeader => true;
+		public List<string> employeesWithRequests = new();
+		public Dictionary<string, List<TimeOffRequest>> employeeRequestMap = new();
 
 		public string EtmReportFileName => Path.GetFileNameWithoutExtension(etmReportCsvFilePath);
 
@@ -31,14 +33,30 @@ namespace SchedulingUtilities
 
 		public void CreateReport()
 		{
-			var report = this as IReport;
-			timeOffRequests = report.ProcessEtmReport<TimeOffRequest>(etmReportCsvFilePath);
+			CreateReport(etmReportCsvFilePath);
 		}
 		
 		public void CreateReport(string pathToCSV)
 		{
 			var report = this as IReport;
 			timeOffRequests = report.ProcessEtmReport<TimeOffRequest>(pathToCSV);
+			
+			employeesWithRequests.Clear();
+			employeeRequestMap.Clear();
+
+			for (int i = 0; i < timeOffRequests.Count; i++)
+			{
+				var employeeName = timeOffRequests[i].EmployeeNameFirstLast;
+				if (employeeRequestMap.TryGetValue(employeeName, out var requests))
+				{
+					requests.Add(timeOffRequests[i]);
+				}
+				else
+				{
+					employeesWithRequests.Add(employeeName);
+					employeeRequestMap.Add(employeeName, new List<TimeOffRequest>() { timeOffRequests[i] });
+				}
+			}
 		}
 
 		public string AsJson()

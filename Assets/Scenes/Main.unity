@@ -1684,8 +1684,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 342097689}
-        m_TargetAssemblyTypeName: SchedulingUtilities.TimeOffRequestInspector, Assembly-CSharp
+      - m_Target: {fileID: 1771498751}
+        m_TargetAssemblyTypeName: SchedulingUtilities.TestGUI, Assembly-CSharp
         m_MethodName: GenerateTestEmailFile
         m_Mode: 1
         m_Arguments:
