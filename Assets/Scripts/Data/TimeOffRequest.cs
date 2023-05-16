@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace SchedulingUtilities
 {
 	[Serializable]
-	public class TimeOffRequest : ReportItem, IComparable, ISerializationCallbackReceiver
+	public class TimeOffRequest : ReportItem, ISerializationCallbackReceiver
 	{
 		public string EmployeeName;
 		public JobTitle JobTitle;
@@ -36,11 +36,6 @@ namespace SchedulingUtilities
 		{
 			TimeOffStart = new DateTime(_timeOffStartTicks);
 			RequestedOn = new DateTime(_requestedOnTicks);
-		}
-		
-		public int CompareTo(object obj)
-		{
-			throw new NotImplementedException();
 		}
 		
 		#region IComparer Implementations

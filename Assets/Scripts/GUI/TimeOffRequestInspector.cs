@@ -37,5 +37,11 @@ namespace SchedulingUtilities
             dateTimeRequestedText.text = request.RequestedOn.ToString(_culture);
             statusText.text = request.Status.ToString();
         }
+
+        public void GenerateTestEmailFile()
+        {
+            if (_timeOffRequest == null) return;
+            GenerateEmail.FromTimeOffRequest(_timeOffRequest);
+        }
     }
 }
