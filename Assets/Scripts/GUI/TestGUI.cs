@@ -253,7 +253,8 @@ namespace SchedulingUtilities
         [UnityEngine.ContextMenu("Recalculate Layout")]
         public void RecalculateLayout()
         {
-            // if (Application.q)
+            if (report == null) return;
+            
             _scrollbarWidth = verticalScrollbar == null || !verticalScrollbar.gameObject.activeInHierarchy ? 0 : verticalScrollbar.rect.width;
             
             float columnWidthSum = 0;
