@@ -168,6 +168,19 @@ namespace SchedulingUtilities
             return header;
         }
 
+        private Color? GetStatusColor(Status status)
+        {
+            Color statusColor = (status) switch
+            {
+                Status.Denied => Color.red,
+                Status.Approved => Color.green,
+                Status.Pending => Color.yellow,
+                _ => Color.clear
+            };
+
+            return statusColor;
+        }
+
         [UnityEngine.ContextMenu("Create Table")]
         private void CreateTable()
         {
@@ -212,20 +225,29 @@ namespace SchedulingUtilities
                 _columnWidths[2] = Mathf.Max(_columnWidths[2], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.TimeOffStart));
                 _columnWidths[3] = Mathf.Max(_columnWidths[3], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.Hours));
                 _columnWidths[4] = Mathf.Max(_columnWidths[4], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.RequestedOn));
-                
-                Color statusColor = (request.Status) switch
-                {
-                    Status.Denied => Color.red,
-                    Status.Approved => Color.green,
-                    Status.Pending => Color.yellow,
-                    _ => Color.clear
-                };
-                
+
+                Color? statusColor = GetStatusColor(request.Status);
                 _columnWidths[5] = Mathf.Max(_columnWidths[5], AddCellGetWidth(row, Instantiate(stringCellPrefab), request.Status, statusColor));
             }
 
             _sorter.SortByName();
             RecalculateLayout();
+        }
+
+        public void RedrawRequest(TimeOffRequest request)
+        {
+            var row = _rowDictionary[request];
+            row.Cells[0].GetComponentInChildren<CellData>().SetData(request.EmployeeName);
+            row.Cells[1].GetComponentInChildren<CellData>().SetData(request.JobTitle);
+            row.Cells[2].GetComponentInChildren<CellData>().SetData(request.TimeOffStart);
+            row.Cells[3].GetComponentInChildren<CellData>().SetData(request.Hours);
+            row.Cells[4].GetComponentInChildren<CellData>().SetData(request.RequestedOn);
+            var statusData = row.Cells[5].GetComponentInChildren<CellData>();
+            statusData.SetData(request.Status);
+            var statusColor = GetStatusColor(request.Status);
+            
+            if (statusColor != null)
+                statusData.SetColor(statusColor.Value);
         }
 
         [UnityEngine.ContextMenu("Recalculate Layout")]
